@@ -1,0 +1,12 @@
+<h3> {{ $ctrl.titleComponent }} </h3>
+<ol>
+  <li ng-repeat = "item in $ctrl.listComponent.getItems">
+    {{ item.quantity }} of {{ item.name }}
+    <!-- <button type="button" ng-click = "$ctrl.listComponent.RemoveItem($index);">Remove Item</button> -->
+    <button type="button" ng-click = "$ctrl.onRemove({ INDEX_KEY : $index });">On Remove Item</button>
+  </li>
+</ol>
+
+<div class="error">
+  Warning, cookies detected ....
+</div>

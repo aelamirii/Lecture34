@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" ng-app = "ShoppingListEventApp">
+  <head>
+    <meta charset="utf-8">
+    <script src = "jQuery-3.1.0.min.js"></script>
+    <script src = "angular.min.js"></script>
+    <script src = "app5.js"></script>
+    <link rel="stylesheet" href="Style5.css">
+    <title> Event System </title>
+  </head>
+  <body>
+    <h1> Event System </h1>
+
+    <div ng-controller = "ShoppingListController as list1">
+
+      <input type="text" ng-model = "list1.ItemName" placeholder="Name">
+      <input type="text" ng-model = "list1.ItemQuantity" placeholder="Quantity">
+      <button type="button" ng-click = "list1.addItem();">Add a new Item</button>
+
+      <shopping-list
+          list-component = "list1"
+          title-component = "{{ list1.TitleController }}"
+          on-remove = "list1.RemoveItem(INDEX_KEY)"
+      ></shopping-list>
+
+      <!-- <ol>
+        <li ng-repeat = "item in list1.getItems">
+          {{ item.quantity }} of {{ item.name }}
+          <button type="button" ng-click = "list1.RemoveItem($index);">Remove Item</button>
+        </li>
+      </ol> -->
+
+    </div>
+
+    <loading-spinner></loading-spinner>
+
+
+
+  </body>
+</html>
