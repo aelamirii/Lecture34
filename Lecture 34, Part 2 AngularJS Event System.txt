@@ -1,0 +1,197 @@
+[SOUND] Okay,
+we're back to our co-editor and I'm located in lecture
+34 which is located in full stack dash course
+five examples folder. And this is once again our
+shopping list application which is now called shopping list events app. There are many times in applications When
+there's some asynchronous communication going on. And while that's taking place,
+because usually that takes a little bit, you need some sort of spinner or some sort of graphic to tell the user that
+something is going on and he should wait. So what we're going to do is,
+when a shopping list item is added to the shopping list we're going to kick off
+a whole bunch of asynchronous actions. Each of which will check whether or not a particular item in the list
+A list contains the word cookie or not. Now, since there could be more
+than one item in that list, we can have more than one
+asynchronous action being fired. However, while those asynchronous actions
+are being resolved, we would like to show some sort of indication to the user
+that something is going on. So we're going to display a loading
+spinner that is actually going to be our flicker button and if you've heard our flicker.com this
+is what their loading icon is like. And since we didn't really know where this
+particular behavior is going to reside We're going to place our
+loading spinner component. Yet another component,
+we're going to have an application, we're going to place it
+outside of our controller. So, it's not even inside of our shopping
+list controller, as you could see the div ends right here, it's actually
+sitting completely outside of it. But it is still sitting inside
+of the ng-app directive, which means it's inside of
+our Angular application. So let's go to our app.js and
+take a look at the code. Let's actually minimize the file
+browser so be a more room here. So as you could see we have one more
+component called loadngSpinner and all the component has a spinner.html
+template url and a SpinnerController. Well, the template URL for
+it's spinner.html Is very simple. Is just an img tag and
+it has as ng-if in it meaning it will get shown this img will be part of the dam
+if this $ctrl.showSpinner is true. Otherwise it will say false and
+the entire img tag will be pulled out from the dam rendering going back to
+our you see we have a starter here. We started our SpinnerController and
+we injected the rootScope and you will see why in a minute and
+this is just a starter one. Let's take a look at A very
+important part of the code which is inside this
+ShoppingListComponentController. That's the thing that displays
+the shopping list and we injected a couple of things here. We injected our q service, if you remember
+from when we spoke about promises and we also injected this
+weight loss filter service. That's an asynchronous
+service that checks for names of the shopping list to check to
+make sure there are no cookies in it. And we're going to invoke that
+service inside the $doCheck again, $doCheck get involved every
+time through the digest loop. And therefore, we could check whether or not our number of items
+in our item changed. And if it did, it means it is time for
+us to check whether or not there are cookies inside
+of our shopping list. Before however when we make
+that Asyncernous call to our loss filter service,
+we're going to broadcast an event. And notice that we're broadcasting
+an event using the root scope. And the reason that is, is because
+the component that needs to catch that, is a loading spinner, and it's completely
+not in our path of optiscope chain. So therefore, we go back to the We using
+a root scope so we're starting from ng app starting from the very top component and
+we're broadcasting that event down. And the event is called shopping
+list call on processing and the only data we're passing
+really we're mostly for show here is on the property on in
+the object and its value is true. So what this event should trigger
+somewhere, somewhere in application, we don't know where, and we don't care. Is it should show some sort of
+a spinner to the user saying hey, we're processing or
+maybe do some other things as well. But in our, for our purposes, all we
+needed to do is actually show the spinner, so the user knows something is going on. Then, we're going to use our $q.all and
+the way we're going to do that is, we're going to loop over every
+item inside of our items array. And for every item, we're going to call
+this WeightLoss Filter service and call its, method called check
+name which returns a promise. And will going to push every single
+promise into this promises ray. As you can remember the queue
+service dollar sign queue service. All takes an array of promises and
+then it can deal with them all at once and that's actually what we want. We want them to be asynchronous and all
+of them to be parallel at the same time. And the reason we want that is because
+even if one fails which means if even if one fails it means that we
+detected a cookie in there. And we're going to go to this catch
+block the rest of the promises will get cancelled automatically
+right there on the spot. So the first time it detects a cookie,
+the rest of them will get cancelled. And what's going to happen is it's going
+to do this jQuery stuff we've seen before where it's going to find the element
+with that error message and go ahead and slide it down. And if all of them come back with
+a positive result, which means none of the items in the shopping list
+actually contain the word cookie. Then we're simply going to remove
+the error message if it's in there. In either case however, whether it's good
+or not we have a finally block that will broadcast yet another message using
+the dollar sign root scope service. And will broadcast shopping
+list processing and on with the value of force
+which means we've done. We have completed all of our
+asynchronous communication. Nothing else is being process,
+so therefore, go ahead and turn off that spinner. Okay, so we've set up broadcasting the on
+event when the spinner should turn on. And we've set up
+the broadcasting of the event that the spinner should turn off at the
+end of all this asynchronous processing. Let's go to our actual
+spinner controller and implement the event listener
+to catch those events. So the first thing we're going to
+do is we're going to go ahead and use our $rootScope that we injected
+right here into our controller. We're going to call this $on method and
+the $on method is going to look for shoppinglist all lowercase processing. That's the name of our event and
+we need the handler function. But I need the name and
+it's going to pass us event and data. Okay, we'll put a semicolon here and now
+we could actually log what the event is. So event and we'll log what that is and
+we'll also log what the data is. Okay, now let's go to our browser and
+browser sync is already started, it's going to open up our console. And let's go it and add something
+like chips two bags of chips and we'll click add. When we do that,
+you can see a couple of things happen. Number one is the first
+event gets fired and that event is an object.You
+can see it has a name. The name of the event is
+shopping list processing and you can see the data as well that
+was broadcast to the entire tree, really, which is this object
+with the property on. And a value of true but
+you could see that there is yet another event that got broadcast. And another Event that got broadcast was,
+again, shoppinglist:processing, except with the object that
+it broadcasted was on false. So the first time when we started
+processing was this event. When the processing was over,
+this event was broadcast. Both of these events
+however were caught inside of our SpinnerController right here. That's where we printed that out,
+the next step is fairly simple, we just have to check if data.on
+because that's our on property. If it's true that means we want to
+turn on the spinner and that's easy., It's just ctrl.showSpinner = true. And otherwise else Our Sctrl.showSpinner
+= false; Let's go ahead and save that. Let's go back to our browser and
+let's go ahead and try it. Let's say chips, 3 bags of chips,
+we'll click Add. And we can see right there it's
+processing, so it's showing us. And once the second event comes
+in that icon disappears and if we say,
+let's move this down a little bit. And if we say cookies,
+the dreaded cookies, 3 bags of the cookies and we click Add,
+yet again it's processing. Now it's processing two events or
+two items in the shopping list and it comes back with cookies detected. So if we remove that
+again once I remove it, it has to once again trigger the whole
+broadcasting which is what it does. And again, it's checking to see
+that there's no cookies in here and once it comes back it turns
+off our animating icon, there's actually one more thing to do. If you take a closer look, this spinner
+controller and this spinner component all together, this loading spinner component,
+will work very well in this view. But what happens if I switch views And
+comeback to it and then switch and comeback to it. Every time it may comeback to it,
+we're going to have $rootScope.$on, so which means every time we will
+register this event listener and there is really no code to go ahead and
+destroy this. This will be different if I just said
+just set something like this scope, why? Well because every time that
+this view gets destroyed this scope gets destroyed with it and
+anything that's attached to it. However, root scope is never destroyed
+until the entire application is destroyed and here we have potential for
+a really nice memory leak. Because every time we come here this
+on is going to get executed but nothing actually de-registers it. Well, we'll learn of this handy
+method in the controller nowadays and the components called
+controller.$onDestroy. So when this is going to get destroyed, when the scope of this
+control against destroyed. We want to trigger the destruction
+of this listener as well and the way we could do that is
+to say this is a function. But I need the name of it and what we
+need is we need to some how get ahold of the function that registered
+this entire listener and the way we could do it is fairly simple. The $on function actually returns
+a deregistration function. So all we have to do is say var cancel Listener and
+we'll make that equal to that. And in here, since it's a local variable
+that we can access, we'll copy that. We'll just say cancelListener, and
+now that we know that it's a function, what we need to do is put parentheses
+behind it put a semicolon and save that. And now, every time this view gets
+destroyed, and the scope, the dollar sign scope that belongs to this controller and
+belongs to this component gets destroyed. Will also at the same time
+de-register our rootScope.$on, so it will not hang around even though
+we're no longer using the scope. Let's go ahead and
+check out to make sure things are working. Let's put chips, chips,
+four bags of chips, and add that. That seems to be working,
+it should turn off in a second. Yes, it did and
+now we're going to put cookies, let's make it five bags of cookies,
+we deserve it and there you go. That's spinning and at the same time
+at the end, bam, it says cookies. If you remove it, it will once again start spinning to
+check the items on the shopping list. We will see that the cookies are not
+there anymore, the spinner will stop and the warning will go away as well. Let's summarize. In Angular,
+the publish-subscribe design pattern is implemented using
+the Angular Events system. You can publish events from anywhere
+in the system and likewise you could listen for those events, and catch them,
+anywhere in the system as well. There's a couple of ways
+of publishing events. One way is to use the $scope.$emit that
+method sends the event up the scope chain. The other way is called
+$scope.$broadcast and that method sends the event
+down the scope chain. Obviously, your message or event
+reachability of a particular node will depend on where it is located
+in the scope chain structure. Whether or not it's in the path of
+the $broadcast or $emit methods. So if it's not in the path,
+or to really reach all nodes, you use the $rootScope.$broadcast. What that does is broadcast a message from
+the very top, where you declare ng-app, which is really the root controller
+of our entire application. And therefore everything an application
+inherits from it's scope and therefore everything is
+in it's scope chain path. To listen for an event,
+you either use the $scope.$on or @rootScope.$on. In either case, what you pass into those methods is the
+name of the event you're listening for, and you register a function that should be
+executed when that event gets triggered. While if you're listening for
+an event using the $scope.$on, there's really nothing left to do because
+when you destroy the particular view, the $scope will get destroyed with it. That is not the case with the $rootScope
+because that always lives throughout your application. So you must deregister the listener
+when using the $scope.$on. The way you deregister the listener
+is simply capture the return value of the dollar sign on method, which
+happens to be the deregistration function. And then you hook that into the destroy
+method of your component, and then calling that deregistration
+function inside of that. If you were to skip doing that, you would
+leave the listener function registered in memory Basically, for the rest of
+their life of this application. And what's worse,
+as you keep coming back to this view, new listener functions
+would be registered. And more and more of them would keep sitting in
+memory without anyway to reach them and unload them from memory by deregistering
+their listening to the event.

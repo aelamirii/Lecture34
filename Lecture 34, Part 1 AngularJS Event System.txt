@@ -1,0 +1,107 @@
+[SOUND]
+We have seen a few ways that components within new applications
+can communicate with each other. For example,
+through prototypal inheritance, child components can communicate
+with the parent components. Note that I'm using the term
+components here loosely. This obviously applies not only
+to components but the directives, controllers, and so on. Another way components can communicate
+is through shared singleton services. Shared services that are created with
+the dot service method are singletons and therefor different components can
+share data between each other using that single instance of the service. However there are situations where such
+communications are just not elegant enough and create too many dependencies between
+different parts of your application. Let's take a look at some illustrations
+Take a look at this diagram. Suppose Component_2 wanted to communicate
+some data to its parent Component_1. We have a couple of
+ways of achieving that. First, we can access
+Component_1 from Component_2 by simply going up the scope chain and
+accessing the parent controller. Angular makes this easy for us with the $
+parent property on the $scope object. This is obviously not the end since we
+still have to make sure that either we set up mechanisms in Component_1
+to react to the new data, or somehow invokes something
+from Component_2. In other words, we still have to make
+sure that Component_1 is the aware of our communication. We can also use the & method,
+callback method binding and call the parent's components
+method passing it some data. So that's communicating with the parent. In the flipped scenario, we want to
+communicate with the child component. One quick way of doing this is for
+Component_2 to provide some way for us to send the data into it. Again, Component_2 would have to have
+some way to react to the new data. Things get a bit more interesting if you
+wanted a component to communicate with it's grandparent component. An elegant solution to this
+is a bit less obvious. Should you use the dollar
+sign parent property twice to go up the scope chain
+to get to your destination? I don't know. Look at the dependency we're
+creating with that move. Another possibly more elegant solution
+is to use a singleton service and inject it into both components. You would still need to set up some watch
+for the value stored in the shared service in Component_1 so you can react to any
+changes in the shared service value. When the target is reversed,
+we're faced with a similar dilemma. Should we send the data
+into Component_2 and have Component_2 send data to Component_1? Or should we use our shared service again? Not sure, but it doesn't feel
+elegant quite so much anymore. And what about communicating with
+multiple components at once? Here, the components we
+want to communicate with, seem scattered all over the top. Component_4, for example,
+is neither a descendant, nor an ancestor, over our Component_2,
+where we're sending the messages from. Yes, we could still use our shared
+singleton service approach, but we'd have to use it everywhere and
+things are getting a bit messy. A similar scenario is when multiple
+components want to communicate with one central component but it's location within
+the dub is not known to those components. Again we could use the shared
+service approach And again, this will be a messy way to approach
+reacting to some data change or UI change that we need to respond to. Luckily, this actually a software designed
+pattern that could solve all these issues in an elegant way in which angular
+implements through its event system. The design pattern is called
+publish subscribe design pattern. And basically there are two components
+in the design pattern, publishers and subscribers. Publishers send messages to
+subscribers on some common channel. So when we speak about publishers, publishers mark messages
+with some classification. Publishers also don't know
+the subscribers of their messages, nor do they know if there are any
+subscribers out there at all. Subscribers, on the other hand,
+sign up to listen for messages with a particular classification. They also don't know publishers or
+if there are any publishers for these particular messages at all. In angular, the common channel in which
+these messages communicate over is scope. Messages that we are speaking
+about in this design pattern are called events that can hold data. There are two types of publishers
+in angular event handling. The first one is called emit. An emit goes up the chain scope. So if Component_3 wanted to emit an event, called greet with a data with message
+equals hi, that event would keep going up the scope until it reached all the way
+to the top scope in the application. The other way to publish messages in
+the angular, is to broadcast them, and that's done with the $broadcast method. Using that method,
+events go down the chain scope. So for example, if the very top scope
+broadcasted an event with the name greet, and the data with the message equals hi,
+that event would propagate all the way down the chain scope to
+the very last leaf in the scope chain. The way you subscribe to an event in
+angular is by calling a special method on the scope service called $on. And you provide it the name of
+the event you're subscribing to and some handler function that deals with
+what to do once you caught that event. You might be wondering the following
+question, what happens when the target of your broadcast is not in the direct path
+of your broadcast code down the chain? Or the other way around if you're
+emitting an event the target is not in the direct scope chain of
+your event going up the scope chain. The answer is that you can broadcast
+your event from the parent scope of everything in your app,
+otherwise known as the root scope. You may not have realized up until now,
+but the ng-app that we have declared on some top element like html in our
+html page is actually the parent controller to all controllers, directives,
+and components that live under it. Angular has a special service
+called $rootScope that you can inject into anything in your
+application in order to refer to the highest scope in the chain possible,
+meaning the root scope. Therefore if you're Component_3
+is trying to reach Component_4, which is not in a direct scope train up
+the chain tree, you can use the dollar $rootScope.$broadcast inside
+of your Component_3. And what that will do is, that will reach
+the very top of your scope chain and will propagate down reaching Component_4. Note that when you broadcast from
+the root scope, every single node in your application gets the event and
+has a chance to respond to it. Okay, let's look at some syntax. The code to emit and broadcast can be done
+from a controller, service, a component or anything really. Don't forget the dollar sign as
+part of the emit method name. As we said,
+$emit sends an event up the scope chain. $broadcast on the other hand,
+sends the event down the scope chain. Note, that its the best practice to
+name space the event name string. This is useful for
+code readability down the line when you try to understand what part
+of the system the event is targeting. In both cases, you could send an object
+along with the event containing some data which can be unwrapped when the event
+arrives at its destination. The last step is to register
+a listener for your event. This is done with the dollar sign on
+function that's executed on some $scope or $rootScope, which is really just
+the top scope in the application. Obviously, we need to use the same
+event namestring we broadcasted or emitted the event with. The handler function is
+automatically passed to arguments. The event which holds
+the event information including that eventName string. And most importantly, the data object,
+this data object is what contains the data that we wrapped together with the
+event when it was emitted or broadcasted. Okay, time to get back to the code
+editor and see these concepts in action.
