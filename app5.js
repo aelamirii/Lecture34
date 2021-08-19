@@ -78,6 +78,8 @@ function ShoppingListComponentController($rootScope, $element, $q, WeightLossFil
       }
 
 
+      console.log("promises.length :", promises.length);
+
       $q.all(promises)
       .then(function (result) {
         var WarningMessage = $element.find('div.error');

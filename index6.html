@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" ng-app = "ShoppingListEventApp">
+  <head>
+    <meta charset="utf-8">
+    <script src = "jQuery-3.1.0.min.js"></script>
+    <script src = "angular.min.js"></script>
+    <script src = "app6.js"></script>
+    <link rel="stylesheet" href="Style6.css">
+
+    <title> Shopping List </title>
+  </head>
+  <body>
+
+    <h1> Shopping List </h1>
+
+    <div ng-controller = "ShoppingListController as list">
+      <input type="text" ng-model = "list.ItemName" placeholder="Name">
+      <input type="text" ng-model = "list.ItemQuantity" placeholder="Quantity">
+      <button type="button" ng-click  = "list.addItem();">Add a new Item</button>
+
+   <shopping-list
+      list-component = "list"
+      title-component = {{list.titleController}}
+      on-remove = "list.RemoveItem(index_Key)"
+   ></shopping-list>
+
+
+   <loading-spinner
+   ></loading-spinner>
+
+      <!-- <ol>
+        <li ng-repeat = "item in list.getItems">
+            {{ item.quantity }} of {{ item.name }}
+            <button type="button" ng-click = "list.RemoveItem($index);"> Remove Item </button>
+        </li>
+      </ol>
+
+      <div class="error" ng-if = "list.errorMessage">
+        Warning cookies was detected : list.errorMessage
+      </div> -->
+
+    </div>
+
+
+
+  </body>
+</html>
