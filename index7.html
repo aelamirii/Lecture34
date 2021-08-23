@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" ng-app = "ShoppingListApp" >
+  <head>
+    <meta charset="utf-8">
+    <script src = "jQuery-3.1.0.min.js"></script>
+    <script src= "angular.min.js"></script>
+    <script src= "app7.js"></script>
+    <link rel="stylesheet" href="Style7.css">
+
+    <title> Shopping List </title>
+  </head>
+  <body>
+
+    <h1> Shopping List </h1>
+
+    <div class="" ng-controller = "ShoppingListController as list">
+
+
+      <input type="text" ng-model = "list.ItemName" placeholder="Name">
+      <input type="text" ng-model = "list.ItemQuantity" placeholder="Quanity">
+      <button type="button" ng-click = "list.addItem();">Add a new Item</button>
+
+      <shipping-list-component
+        list-component = "list"
+        title-component = "{{ list.Title_Controller }}"
+        on-remove = "list.RemoveItem(My_Index)"
+      ></shipping-list-component>
+
+      <!-- <h3> {{ list.Title_Controller }} </h3>
+      <ol>
+        <li ng-repeat = "item in list.getItems">
+          {{ item.quantity }} of {{ item.name }}
+          <button type="button" ng-click = "list.RemoveItem($index)"> Remove Item </button>
+        </li>
+      </ol> -->
+
+    </div>
+
+    <loading-spinner></loading-spinner>
+
+  </body>
+</html>

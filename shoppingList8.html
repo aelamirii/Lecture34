@@ -1,0 +1,13 @@
+
+<h3> {{ $ctrl.titleItems }} </h3>
+<ol>
+  <li ng-repeat = "item in $ctrl.listItems.getItems">
+    {{ item.quantity }} of {{ item.name }}
+    <button type="button" ng-click = "$ctrl.onRemove( { My_Index : $index } );"> Remove Item </button>
+  </li>
+</ol>
+
+
+<div class="error">
+  Warning: ccokies is detected ...................
+</div>
